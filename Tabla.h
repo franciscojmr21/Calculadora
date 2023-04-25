@@ -5,7 +5,7 @@
 using namespace std;
 
 typedef char tipo_cadena[25];
-
+ 
 union tipo_valor{
 	int		valor_entero;
 	float		valor_real;
