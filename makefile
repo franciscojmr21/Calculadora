@@ -5,7 +5,7 @@ OBJ = expresiones.o lexico.o Tabla.o
 
 expresiones : $(OBJ)     				#segunda fase de la traducción. Generación del código ejecutable 
 	g++ -oexpresiones $(OBJ)
-	./expresiones #entrada.txt salida.txt
+	./expresiones entrada.txt salida.txt
 	
 Tabla.o : Tabla.cpp
 	g++ -c Tabla.cpp

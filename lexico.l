@@ -20,10 +20,13 @@ not [n][o][t]
 
 
 %option noyywrap
+%x COM1
  
 %%
 
-
+"//"         BEGIN(COM1);
+<COM1>"\n"     BEGIN(0);
+<COM1>.     ;
 
 SALIR			return SALIR;
 {true}			return _TRUE;

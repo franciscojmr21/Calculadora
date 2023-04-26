@@ -5,7 +5,7 @@
 
 using namespace std;
 
-extern FILE *f;
+extern FILE *yyout;
 
 void insertar (tabla_IDs &TS, tipo_datoTS dato){
 	int pos = 0;
@@ -62,32 +62,26 @@ void insertarDatos(tabla_IDs &TS, tipo_datoTS dato, int pos){
 }
 
 void mostrarTS(tabla_IDs TS){
-	if(insertados>0){
-		cout<<"Tabla de símbolos:"<<endl;
-		for(int i = 0; i<insertados; i++){;
-			cout<<TS[i].identificador<<"	";
-			switch (TS[i].tipo) {
-				case 0:
-					cout<<"entero	"<<TS[i].valor.valor_entero<<endl;
-				    break;
-				case 1:
-					cout<<"real	"<<TS[i].valor.valor_real<<endl;
-				    break;
-				case 2:
-					cout<<"lógico	";
-					if(TS[i].valor.valor_bool == 1){
-						cout<<"true"<<endl;
-					}
-					else{
-						cout<<"false"<<endl;
-					}
-				    break;
-				case 3:
-					cout<<"cadena	"<<TS[i].valor.valor_cad<<endl;
-				    break;
-		    	}
-	    	}
-    	}
+    if(insertados>0){
+        fprintf(yyout, "Tabla de símbolos:\n");
+        for(int i = 0; i<insertados; i++){;
+            fprintf(yyout, "%s    ", TS[i].identificador);
+            switch (TS[i].tipo) {
+                case 0:
+                    fprintf(yyout, "entero    %d\n", TS[i].valor.valor_entero);
+                    break;
+                case 1:
+                    fprintf(yyout, "real    %f\n", TS[i].valor.valor_real);
+                    break;
+                case 2:
+                    fprintf(yyout, "lógico    %s\n", TS[i].valor.valor_bool ? "true" : "false");
+                    break;
+                case 3:
+                    fprintf(yyout, "cadena    %s\n", TS[i].valor.valor_cad);
+                    break;
+            }
+        }
+    }
 }
 
 bool obtenerDato(tabla_IDs TS, tipo_datoTS &dato){

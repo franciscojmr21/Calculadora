@@ -17,18 +17,21 @@ tabla_IDs TS;
 //definición de procedimientos auxiliares
 void yyerror(const char* s){         /*    llamada por cada error sintactico de yacc */
 
-	cout << "Error sintáctico en la instrucción "<< n_instruciones<<endl;	
+	cout << "Error sintáctico en la instrucción "<< n_instruciones<<endl;
+	error=false; 	
 } 
 void errorDiv0(){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": división por cero"<<endl;	
 } 
 void errorDivInt(string op){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": se usa el operador "<<op<<" con operandos reales"<<endl;	
+}
+void errorVarNoDef(string var){         /*    llamada por cada error semántico de yacc */
+	cout << "Error semántico en la instrucción "<< n_instruciones<<": la variable "<<var<<" no está definida"<<endl;	
 } 
 
 void prompt(){
 	n_instruciones++;
-  	cout << "LISTO> ";
 }
 
 %}
@@ -69,40 +72,29 @@ entrada: 		{prompt();}
       ;
 linea:  IDENTIFICADOR ASIGNACION expr '\n' {	tipo_datoTS dato;
 						if(!error){
-							cout << "Instrucción "<<n_instruciones<<": "<< "La variable " 
-							<<$1<<" de tipo ";
-							if($3.isInt) 
-								cout<<"entero"; 
-							else 
-								cout<<"real";
-							cout<<" toma el valor "
-							<<$3.valor<<endl;
 							if($3.isInt){
 								strcpy(dato.identificador, $1);
 								dato.tipo = 0;
 								dato.valor.valor_entero = $3.valor;
-								cout<<"valor"<<dato.valor.valor_entero<<endl;
 							}else{
 								strcpy(dato.identificador, $1);
 								dato.tipo = 1;
 								dato.valor.valor_real = $3.valor;
 							}
 							insertar(TS, dato);
-							mostrarTS(TS);
 						}
 						else error=false; 
 						prompt(); }
-	| IDENTIFICADOR ASIGNACION logico '\n' {tipo_datoTS dato;if(!error) cout << "Instrucción "<<n_instruciones<<": "<< "La variable " 
-					<<$1<<" de tipo lógico, toma el valor ";
-					if($3) cout<<"true"<<endl; else cout<<"false"<<endl;
+	| IDENTIFICADOR ASIGNACION logico '\n' {tipo_datoTS dato;
+											if(!error) {
 
-					strcpy(dato.identificador, $1);
-					dato.tipo = 2;
-					dato.valor.valor_bool = $3;
-					insertar(TS, dato);
-					mostrarTS(TS);
-					prompt(); }	
-	|SALIR 	'\n'			{return(0);	}   
+												strcpy(dato.identificador, $1);
+												dato.tipo = 2;
+												dato.valor.valor_bool = $3;
+												insertar(TS, dato);
+											}
+											else error=false; 
+											prompt();}	
 	|error		'\n'			{yyerrok;prompt();}      
 	;
 	
@@ -111,8 +103,9 @@ logico: _TRUE		{$$=true;}
 	|_FALSE	{$$=false;}
 	|IDENTIFICADOR			{
 						tipo_datoTS dato;
+						strcpy(dato.identificador, $1);
 						error = obtenerDato(TS, dato);
-						if(error) yyerrok;
+						if(error) errorVarNoDef($1);
 						else{
 							switch (dato.tipo) {
 								case 0:
@@ -147,7 +140,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 						tipo_datoTS dato;
 						strcpy(dato.identificador, $1);
 						error = !(obtenerDato(TS, dato));
-						if(error) yyerrok;
+						if(error) errorVarNoDef($1);
 						else{
 							switch (dato.tipo) {
 								case 0:
@@ -162,7 +155,6 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 									cout<<"error, no puede ser de tipo logico"<<endl;
 								    break;
 							}
-							cout<<"valor de $$ "<<$$.valor<<endl;
 						}
 					}  
        | expr '+' expr 		{$$.isInt= $1.isInt && $3.isInt;$$.valor=$1.valor+$3.valor;}              
@@ -208,7 +200,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 %%
 
 
-int main(){
+int main(int argc, char *argv[]){
      
      n_instruciones = 0;
      
@@ -225,7 +217,17 @@ int main(){
      cout <<"*        se mostrará un mensaje y la ejecución       *"<<endl;
      cout <<"*        del programa finaliza                       *"<<endl;
      cout <<"******************************************************"<<endl<<endl<<endl;
-     yyparse();
+	 if(argc > 2){
+		yyin = fopen(argv[1], "r");
+		yyout = fopen(argv[2], "w");
+     	yyparse();
+		mostrarTS(TS);
+	 }else{
+		cout << "Error en los argumentos" << endl;
+	 }
+
+	 fclose(yyin);
+	
      cout <<"****************************************************"<<endl;
      cout <<"*                                                  *"<<endl;
      cout <<"*                 ADIOS!!!!                        *"<<endl;
