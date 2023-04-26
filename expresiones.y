@@ -145,16 +145,17 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 	|REAL                   	{$$.isInt=false;$$.valor=$1;} 
 	|IDENTIFICADOR			{
 						tipo_datoTS dato;
+						strcpy(dato.identificador, $1);
 						error = !(obtenerDato(TS, dato));
 						if(error) yyerrok;
 						else{
 							switch (dato.tipo) {
 								case 0:
-									$$.isInt = false;
+									$$.isInt = true;
 									$$.valor = dato.valor.valor_entero;
 								    break;
 								case 1:
-									$$.isInt=true;
+									$$.isInt=false;
 									$$.valor = dato.valor.valor_real;
 								    break;
 								case 2:
