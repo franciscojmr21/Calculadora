@@ -13,7 +13,6 @@ bool hayError = false;
 bool isInt = false;
 bool c_logico = false;
 tabla_IDs TS;
-const char* tipoError[3]={"-1", "-1", "-1"};
 //definición de procedimientos auxiliares
 
 void errorDiv0(){         /*    llamada por cada error semántico de yacc */
@@ -37,29 +36,9 @@ void errorLogic(){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": variables de tipo lógico no pueden aparecer en la parte derecha de una asignación"<<endl;	
 }
 
-void checkErrors(){
-	if (strcmp(tipoError[0], "1") == 0){
-		errorDiv0();
-	} else if (strcmp(tipoError[0], "2") == 0){
-		errorDivInt(tipoError[1]);
-	} else if (strcmp(tipoError[0], "3") == 0){
-		errorVarNoDef(tipoError[1]);
-	} else if (strcmp(tipoError[0], "4") == 0){
-		errorVarIsInt(tipoError[1], tipoError[2]);
-	} else if (strcmp(tipoError[0], "5") == 0){
-		errorLogic();
-	}
-
-	tipoError[0]="-1";
-	tipoError[1]="-1";
-	tipoError[2]="-1";
-}
 
 void yyerror(const char* s){         /*    llamada por cada error sintactico de yacc */
 	cout << "Error sintáctico en la instrucción " << n_instruciones << endl;
-	tipoError[0]="-1";
-	tipoError[1]="-1";
-	tipoError[2]="-1";
 	n_instruciones++;
 } 
 
@@ -112,10 +91,7 @@ linea:  IDENTIFICADOR ASIGNACION expr '\n' {
 						if($3.isInt){
 							if(existe && datoID.tipo!=0){
 								hayError = true;
-								tipoError[0]="4";
-								tipoError[1]=$1;
-								tipoError[2]="0";
-								checkErrors();
+								errorVarIsInt($1, "0");
 								
 							}else{
 								strcpy(dato.identificador, $1);
@@ -126,10 +102,7 @@ linea:  IDENTIFICADOR ASIGNACION expr '\n' {
 						}else{
 							if(existe && datoID.tipo!=1){
 								hayError = true;
-								tipoError[0]="4";
-								tipoError[1]=$1;
-								tipoError[2]="1";
-								checkErrors();
+								errorVarIsInt($1, "1");
 								
 							}else{
 								strcpy(dato.identificador, $1);
@@ -181,9 +154,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 						bool obtenido = (obtenerDato(TS, dato));
 						if(!obtenido) {
 							hayError = true;
-							tipoError[0]="3";
-							tipoError[1]=$1;
-							checkErrors();
+							errorVarNoDef($1);
 						}
 						else{
 							switch (dato.tipo) {
@@ -196,9 +167,8 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 									$$.valor = dato.valor.valor_real;
 								    break;
 								case 2:
-									tipoError[0]="5";
 									hayError = true;
-									checkErrors();
+									errorLogic();
 								    break;
 							}
 						}
@@ -213,34 +183,28 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 								} 
        | expr DIV expr        {$$.isInt = $1.isInt && $3.isInt; if($3.valor == 0) {
 									hayError = true;
-									tipoError[0]="1";
-									checkErrors();
+									errorDiv0();
        								}
        							else{if($$.isInt) {
        									$$.valor=$1.valor/$3.valor;
 									}
 									if(!$$.isInt) {
 										hayError = true;
-										tipoError[0]="2";
-										tipoError[1]="div";
-										checkErrors();
+										errorDivInt("div");
        								}
 								}
        			} 
        								
        | expr '%' expr		{$$.isInt = $1.isInt && $3.isInt; if($3.valor == 0) {
 									hayError = true;
-									tipoError[0]="1";
-       								checkErrors();
+       								errorDiv0();
        								}
        							else{
        								if($$.isInt) 
        									$$.valor=int($1.valor)%int($3.valor); 
 	       							else {
 										hayError = true;
-										tipoError[0]="2";
-										tipoError[1]="%";
-										checkErrors();
+										errorDivInt("%");
 										 }
 	       							}
 	       						}
