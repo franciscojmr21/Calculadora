@@ -4,4 +4,3 @@ Bb    real    25.400000
 Cc    lógico    true
 aa    entero    2
 bandera    lógico    false
-aux    entero    -2147483648

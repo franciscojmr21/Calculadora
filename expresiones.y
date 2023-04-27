@@ -197,6 +197,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 								    break;
 								case 2:
 									tipoError[0]="5";
+									hayError = true;
 									checkErrors();
 								    break;
 							}
