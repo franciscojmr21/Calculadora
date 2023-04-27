@@ -2,3 +2,4 @@ Tabla de símbolos:
 A    entero    7
 Bb    real    25.400000
 Cc    lógico    true
+bandera    lógico    false

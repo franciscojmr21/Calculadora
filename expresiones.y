@@ -13,12 +13,9 @@ bool isInt = false;
 bool error = false;
 bool c_logico = false;
 tabla_IDs TS;
-
+const char* tipoError[3]={};
 //definición de procedimientos auxiliares
-void yyerror(const char* s){         /*    llamada por cada error sintactico de yacc */
 
-	cout << "Error sintáctico en la instrucción "<< n_instruciones<<endl;
-} 
 void errorDiv0(){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": división por cero"<<endl;	
 } 
@@ -28,18 +25,33 @@ void errorDivInt(string op){         /*    llamada por cada error semántico de 
 void errorVarNoDef(string var){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": la variable "<<var<<" no está definida"<<endl;	
 } 
-void errorVarIsInt(string var, int type){         /*    llamada por cada error semántico de yacc */
+void errorVarIsInt(string var, const char* type){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": la variable "<<var<<" es de tipo ";
-	if(type==0){
+	if(strcmp(type, "0")==0){
 		cout<<"entero y no se le puede asignar un valor real"<<endl;
 	}else{
 		cout<<"real y no se le puede asignar un valor entero"<<endl;
 	}	
 }
 
+void yyerror(const char* s){         /*    llamada por cada error sintactico de yacc */
+	cout << "ERRORRRRRRR "<<endl;
+	if (strcmp(tipoError[0], "1") == 0){
+		errorDiv0();
+	} else if (strcmp(tipoError[0], "2") == 0){
+		errorDivInt(tipoError[1]);
+	} else if (strcmp(tipoError[0], "3") == 0){
+		errorVarNoDef(tipoError[1]);
+	} else if (strcmp(tipoError[0], "4") == 0){
+		errorVarIsInt(tipoError[1], tipoError[2]);
+	} else {
+		cout << "Error sintáctico en la instrucción " << n_instruciones << endl;
+	}
+} 
+
 void prompt(){
 	n_instruciones++;
-	error = false;
+	cout<<"se incrementa +1"<<endl;
 	cout<<endl<<"instruccion "<<n_instruciones<<endl;
 }
 
@@ -80,42 +92,41 @@ entrada: 		{prompt();}
       |entrada linea
       ;
 linea:  IDENTIFICADOR ASIGNACION expr '\n' {	tipo_datoTS dato; tipo_datoTS datoID; cout<<"id prueba "<<$1<<endl;
-						if(!error){
-							strcpy(datoID.identificador, $1);
-							bool existe = obtenerDato(TS, datoID);
-							cout<<"existe "<<existe<<endl;
-							if($3.isInt){
-								if(existe && datoID.tipo!=0){
-									errorVarIsInt($1, 0);
-								}else{
-									strcpy(dato.identificador, $1);
-									dato.tipo = 0;
-									dato.valor.valor_entero = $3.valor;
-								}
+						strcpy(datoID.identificador, $1);
+						bool existe = obtenerDato(TS, datoID);
+						cout<<"existe "<<existe<<endl;
+						if($3.isInt){
+							if(existe && datoID.tipo!=0){
+								tipoError[0]="4";
+								tipoError[1]=$1;
+								tipoError[2]="0";
+								yyerror;
 							}else{
-								if(existe && datoID.tipo!=1){
-									errorVarIsInt($1, 1);
-								}else{
-									strcpy(dato.identificador, $1);
-									dato.tipo = 1;
-									dato.valor.valor_real = $3.valor;
-								}
+								strcpy(dato.identificador, $1);
+								dato.tipo = 0;
+								dato.valor.valor_entero = $3.valor;
 							}
-							insertar(TS, dato);
+						}else{
+							if(existe && datoID.tipo!=1){
+								tipoError[0]="4";
+								tipoError[1]=$1;
+								tipoError[2]="1";
+								yyerror;
+							}else{
+								strcpy(dato.identificador, $1);
+								dato.tipo = 1;
+								dato.valor.valor_real = $3.valor;
+							}
 						}
-						else error=true; 
+						insertar(TS, dato);
 						prompt(); }
 	| IDENTIFICADOR ASIGNACION logico '\n' {tipo_datoTS dato;
-											if(!error) {
-
-												strcpy(dato.identificador, $1);
-												dato.tipo = 2;
-												dato.valor.valor_bool = $3;
-												insertar(TS, dato);
-											}
-											else error=true; 
+											strcpy(dato.identificador, $1);
+											dato.tipo = 2;
+											dato.valor.valor_bool = $3;
+											insertar(TS, dato);
 											prompt();}	
-	|error		'\n'			{yyerrok; cout<<"error log "<<error<<endl; prompt();}      
+	|error		'\n'			{yyerror; prompt();}      
 	;
 	
        
@@ -125,7 +136,11 @@ logico: _TRUE		{$$=true;}
 						tipo_datoTS dato;
 						strcpy(dato.identificador, $1);
 						error = !obtenerDato(TS, dato);
-						if(error){ errorVarNoDef($1); cout<<"error id log"<<endl;}
+						if(error){ 
+							tipoError[0]="3";
+							tipoError[1]=$1;
+							yyerror;
+							cout<<"error id log"<<endl;}
 						else{
 							switch (dato.tipo) {
 								case 0:
@@ -148,7 +163,7 @@ logico: _TRUE		{$$=true;}
 	|expr DISTINTO expr	{$$ = $1.valor != $3.valor;}
 	|logico IGUAL logico	{cout<<"igual log"<<endl;$$ = $1 == $3;}
 	|logico DISTINTO logico {$$ = $1 != $3;}
-	|logico AND logico {if(!error){ $$ = $1 && $3; cout<<"NO error and"<<endl;}else cout<<"error and"<<endl;}
+	|logico AND logico {$$ = $1 && $3;}
 	|logico OR logico {$$ = $1 || $3;}
 	|NOT logico 		{if($2)$$=false;else $$=true;}
 	|'(' logico ')'		{$$=$2;}
@@ -160,7 +175,12 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 						tipo_datoTS dato;
 						strcpy(dato.identificador, $1);
 						error = !(obtenerDato(TS, dato));
-						if(error) errorVarNoDef($1);
+						cout<<"2id prueba "<<$1<<endl;
+						if(error) {
+							tipoError[0]="3";
+							tipoError[1]=$1;
+							yyerror;
+						}
 						else{
 							switch (dato.tipo) {
 								case 0:
@@ -179,36 +199,37 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 					}  
        | expr '+' expr 		{$$.isInt= $1.isInt && $3.isInt;$$.valor=$1.valor+$3.valor;}              
        | expr '-' expr    	{$$.isInt= $1.isInt && $3.isInt; $$.valor=$1.valor-$3.valor;}            
-       | expr '*' expr        {$$.isInt= $1.isInt && $3.isInt; $$.valor=$1.valor*$3.valor;} 
+       | expr '*' expr        {$$.isInt= $1.isInt && $3.isInt; $$.valor=$1.valor*$3.valor; cout<<"1prueba "<<endl;} 
        | expr '/' expr        {$$.isInt= false; if($3.valor != 0) 
 				       				$$.valor=static_cast<double>($1.valor/$3.valor);
 				       			else {
-				       				error=true;  
-				       				errorDiv0();}
+				       				yyerror;}
 								} 
        | expr DIV expr        {$$.isInt = $1.isInt && $3.isInt; if($3.valor == 0) {
-       								error=true; 
-       								errorDiv0();
+									tipoError[0]="1";
+       								yyerror;
        								}
        							else{if($$.isInt) 
        								$$.valor=$1.valor/$3.valor;
        							if(!$$.isInt) {
-       								error=true; 
-       								errorDivInt("div"); 
+									tipoError[0]="2";
+									tipoError[1]="div";
+       								yyerror; 
        								}
 								}
        			} 
        								
        | expr '%' expr		{$$.isInt = $1.isInt && $3.isInt; if($3.valor == 0) {
-       								error=true; 
-       								errorDiv0();
+									tipoError[0]="1";
+       								yyerror;
        								}
        							else{
        								if($$.isInt) 
        									$$.valor=int($1.valor)%int($3.valor); 
 	       							else {
-	       								error=true;
-	       								errorDivInt("%");}
+										tipoError[0]="2";
+										tipoError[1]="%";
+										yyerror; }
 	       							}
 	       						}
        |'-' expr %prec menos  {$$.valor= -$2.valor;$$.isInt = $2.isInt;}
