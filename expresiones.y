@@ -28,14 +28,16 @@ void errorVarNoDef(string var){         /*    llamada por cada error semántico 
 void errorVarIsInt(string var, const char* type){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": la variable "<<var<<" es de tipo ";
 	if(strcmp(type, "0")==0){
-		cout<<"entero y no se le puede asignar un valor real"<<endl;
-	}else{
 		cout<<"real y no se le puede asignar un valor entero"<<endl;
+	}else{
+		cout<<"entero y no se le puede asignar un valor real"<<endl;
 	}	
+}
+void errorLogic(){         /*    llamada por cada error semántico de yacc */
+	cout << "Error semántico en la instrucción "<< n_instruciones<<": variables de tipo lógico no pueden aparecer en la parte derecha de una asignación"<<endl;	
 }
 
 void checkErrors(){
-	hayError = true;
 	if (strcmp(tipoError[0], "1") == 0){
 		errorDiv0();
 	} else if (strcmp(tipoError[0], "2") == 0){
@@ -44,7 +46,10 @@ void checkErrors(){
 		errorVarNoDef(tipoError[1]);
 	} else if (strcmp(tipoError[0], "4") == 0){
 		errorVarIsInt(tipoError[1], tipoError[2]);
+	} else if (strcmp(tipoError[0], "5") == 0){
+		errorLogic();
 	}
+
 	tipoError[0]="-1";
 	tipoError[1]="-1";
 	tipoError[2]="-1";
@@ -60,7 +65,6 @@ void yyerror(const char* s){         /*    llamada por cada error sintactico de 
 
 void prompt(){
 	n_instruciones++;
-	cout<<endl<<"Instrucción "<<n_instruciones<<": ";
 }
 
 %}
@@ -99,11 +103,15 @@ void prompt(){
 entrada: 		{prompt();}
       |entrada linea
       ;
-linea:  IDENTIFICADOR ASIGNACION expr '\n' {if(!hayError){cout<<"id expr: "<<$1<<endl;	tipo_datoTS dato; tipo_datoTS datoID;
+linea:  IDENTIFICADOR ASIGNACION expr '\n' {
+					
+					if(!hayError){	
+						tipo_datoTS dato; tipo_datoTS datoID;
 						strcpy(datoID.identificador, $1);
 						bool existe = obtenerDato(TS, datoID);
 						if($3.isInt){
 							if(existe && datoID.tipo!=0){
+								hayError = true;
 								tipoError[0]="4";
 								tipoError[1]=$1;
 								tipoError[2]="0";
@@ -113,9 +121,11 @@ linea:  IDENTIFICADOR ASIGNACION expr '\n' {if(!hayError){cout<<"id expr: "<<$1<
 								strcpy(dato.identificador, $1);
 								dato.tipo = 0;
 								dato.valor.valor_entero = $3.valor;
+								insertar(TS, dato);
 							}
 						}else{
 							if(existe && datoID.tipo!=1){
+								hayError = true;
 								tipoError[0]="4";
 								tipoError[1]=$1;
 								tipoError[2]="1";
@@ -125,19 +135,25 @@ linea:  IDENTIFICADOR ASIGNACION expr '\n' {if(!hayError){cout<<"id expr: "<<$1<
 								strcpy(dato.identificador, $1);
 								dato.tipo = 1;
 								dato.valor.valor_real = $3.valor;
+
+								insertar(TS, dato);
 							}
-						}
-						insertar(TS, dato);}
+						}}
 						hayError = false;
 						prompt();}
-	| IDENTIFICADOR ASIGNACION logico '\n' {cout<<"id log: "<<$1<<endl;if(!hayError){tipo_datoTS dato;
+						
+	| IDENTIFICADOR ASIGNACION logico '\n' {
+									if(!hayError){
+											tipo_datoTS dato;
 											strcpy(dato.identificador, $1);
 											dato.tipo = 2;
 											dato.valor.valor_bool = $3;
-											insertar(TS, dato);}
-											hayError = false;
-											prompt();}	
-	|error		'\n'			{yyerrok; prompt();}      
+											insertar(TS, dato);
+									}
+									hayError = false;
+									prompt();}	
+
+	|error		'\n'			{yyerrok;}      
 	;
 	
        
@@ -147,7 +163,7 @@ logico: _TRUE		{$$=true;}
 	|expr LOGICOMENOR expr	{$$ = $1.valor<$3.valor;}
 	|expr LOGICOMAYORIGUAL expr	{$$ = $1.valor>=$3.valor;}
 	|expr LOGICOMENORIGUAL expr	{$$ = $1.valor<=$3.valor;}
-	|expr IGUAL expr	{$$ = $1.valor == $3.valor; }
+	|expr IGUAL expr	{$$ = $1.valor == $3.valor;}
 	|expr DISTINTO expr	{$$ = $1.valor != $3.valor;}
 	|logico IGUAL logico	{$$ = $1 == $3;}
 	|logico DISTINTO logico {$$ = $1 != $3;}
@@ -164,6 +180,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 						strcpy(dato.identificador, $1);
 						bool obtenido = (obtenerDato(TS, dato));
 						if(!obtenido) {
+							hayError = true;
 							tipoError[0]="3";
 							tipoError[1]=$1;
 							checkErrors();
@@ -179,7 +196,8 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 									$$.valor = dato.valor.valor_real;
 								    break;
 								case 2:
-									cout<<"error, no puede ser de tipo logico"<<endl;
+									tipoError[0]="5";
+									checkErrors();
 								    break;
 							}
 						}
@@ -193,6 +211,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 				       				}
 								} 
        | expr DIV expr        {$$.isInt = $1.isInt && $3.isInt; if($3.valor == 0) {
+									hayError = true;
 									tipoError[0]="1";
 									checkErrors();
        								}
@@ -200,6 +219,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
        									$$.valor=$1.valor/$3.valor;
 									}
 									if(!$$.isInt) {
+										hayError = true;
 										tipoError[0]="2";
 										tipoError[1]="div";
 										checkErrors();
@@ -208,6 +228,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
        			} 
        								
        | expr '%' expr		{$$.isInt = $1.isInt && $3.isInt; if($3.valor == 0) {
+									hayError = true;
 									tipoError[0]="1";
        								checkErrors();
        								}
@@ -215,6 +236,7 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
        								if($$.isInt) 
        									$$.valor=int($1.valor)%int($3.valor); 
 	       							else {
+										hayError = true;
 										tipoError[0]="2";
 										tipoError[1]="%";
 										checkErrors();

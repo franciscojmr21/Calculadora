@@ -25,7 +25,7 @@ not [n][o][t]
 %%
 
 "//"         BEGIN(COM1);
-<COM1>"\n"     BEGIN(0);
+<COM1>"\n"     {BEGIN(0); return (yytext[0]);}    
 <COM1>.     ;
 
 SALIR			return SALIR;
