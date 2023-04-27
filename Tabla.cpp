@@ -106,7 +106,6 @@ bool obtenerDato(tabla_IDs TS, tipo_datoTS &dato){
 			    break;
 		}
 	}
-	
 	return enc;
 
 }

@@ -7,7 +7,7 @@ Terminales no usados en la gramática
     MAYOR
 
 
-Estado 9 conflictos: 4 reducción/reducción
+Estado 7 conflictos: 4 reducción/reducción
 
 
 Gramática
@@ -19,66 +19,65 @@ Gramática
 
     3 linea: IDENTIFICADOR ASIGNACION expr '\n'
     4      | IDENTIFICADOR ASIGNACION logico '\n'
-    5      | error '\n'
 
-    6 logico: _TRUE
-    7       | _FALSE
-    8       | IDENTIFICADOR
-    9       | expr LOGICOMAYOR expr
-   10       | expr LOGICOMENOR expr
-   11       | expr LOGICOMAYORIGUAL expr
-   12       | expr LOGICOMENORIGUAL expr
-   13       | expr IGUAL expr
-   14       | expr DISTINTO expr
-   15       | logico IGUAL logico
-   16       | logico DISTINTO logico
-   17       | logico AND logico
-   18       | logico OR logico
-   19       | NOT logico
-   20       | '(' logico ')'
+    5 logico: _TRUE
+    6       | _FALSE
+    7       | IDENTIFICADOR
+    8       | expr LOGICOMAYOR expr
+    9       | expr LOGICOMENOR expr
+   10       | expr LOGICOMAYORIGUAL expr
+   11       | expr LOGICOMENORIGUAL expr
+   12       | expr IGUAL expr
+   13       | expr DISTINTO expr
+   14       | logico IGUAL logico
+   15       | logico DISTINTO logico
+   16       | logico AND logico
+   17       | logico OR logico
+   18       | NOT logico
+   19       | '(' logico ')'
 
-   21 expr: NUMERO
-   22     | REAL
-   23     | IDENTIFICADOR
-   24     | expr '+' expr
-   25     | expr '-' expr
-   26     | expr '*' expr
-   27     | expr '/' expr
-   28     | expr DIV expr
-   29     | expr '%' expr
-   30     | '-' expr
-   31     | '(' expr ')'
+   20 expr: NUMERO
+   21     | REAL
+   22     | IDENTIFICADOR
+   23     | expr '+' expr
+   24     | expr '-' expr
+   25     | expr '*' expr
+   26     | expr '/' expr
+   27     | expr DIV expr
+   28     | expr '%' expr
+   29     | '-' expr
+   30     | '(' expr ')'
 
 
 Terminales con las reglas donde aparecen
 
     $end (0) 0
-    '\n' (10) 3 4 5
-    '%' (37) 29
-    '(' (40) 20 31
-    ')' (41) 20 31
-    '*' (42) 26
-    '+' (43) 24
-    '-' (45) 25 30
-    '/' (47) 27
-    error (256) 5
-    NUMERO <c_entero> (258) 21
+    '\n' (10) 3 4
+    '%' (37) 28
+    '(' (40) 19 30
+    ')' (41) 19 30
+    '*' (42) 25
+    '+' (43) 23
+    '-' (45) 24 29
+    '/' (47) 26
+    error (256)
+    NUMERO <c_entero> (258) 20
     SALIR (259)
-    IDENTIFICADOR <c_cadena> (260) 3 4 8 23
-    REAL <c_real> (261) 22
+    IDENTIFICADOR <c_cadena> (260) 3 4 7 22
+    REAL <c_real> (261) 21
     ASIGNACION (262) 3 4
-    DIV (263) 28
-    LOGICOMAYOR (264) 9
-    LOGICOMENOR (265) 10
-    LOGICOMAYORIGUAL (266) 11
-    LOGICOMENORIGUAL (267) 12
-    _TRUE (268) 6
-    _FALSE (269) 7
-    IGUAL (270) 13 15
-    DISTINTO (271) 14 16
-    AND (272) 17
-    OR (273) 18
-    NOT (274) 19
+    DIV (263) 27
+    LOGICOMAYOR (264) 8
+    LOGICOMENOR (265) 9
+    LOGICOMAYORIGUAL (266) 10
+    LOGICOMENORIGUAL (267) 11
+    _TRUE (268) 5
+    _FALSE (269) 6
+    IGUAL (270) 12 14
+    DISTINTO (271) 13 15
+    AND (272) 16
+    OR (273) 17
+    NOT (274) 18
     MENOR (275)
     MENORIGUAL (276)
     MAYORIGUAL (277)
@@ -94,14 +93,14 @@ No terminales con las reglas donde aparecen
         on left: 1 2
         on right: 0 2
     linea (35)
-        on left: 3 4 5
+        on left: 3 4
         on right: 2
     logico <c_logico> (36)
-        on left: 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-        on right: 4 15 16 17 18 19 20
+        on left: 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+        on right: 4 14 15 16 17 18 19
     expr <c_expresion> (37)
-        on left: 21 22 23 24 25 26 27 28 29 30 31
-        on right: 3 9 10 11 12 13 14 24 25 26 27 28 29 30 31
+        on left: 20 21 22 23 24 25 26 27 28 29 30
+        on right: 3 8 9 10 11 12 13 23 24 25 26 27 28 29 30
 
 
 Estado 0
@@ -119,10 +118,9 @@ Estado 1
     2 entrada: entrada . linea
 
     $end           desplazar e ir al estado 2
-    error          desplazar e ir al estado 3
-    IDENTIFICADOR  desplazar e ir al estado 4
+    IDENTIFICADOR  desplazar e ir al estado 3
 
-    linea  ir al estado 5
+    linea  ir al estado 4
 
 
 Estado 2
@@ -134,835 +132,821 @@ Estado 2
 
 Estado 3
 
-    5 linea: error . '\n'
-
-    '\n'  desplazar e ir al estado 6
-
-
-Estado 4
-
     3 linea: IDENTIFICADOR . ASIGNACION expr '\n'
     4      | IDENTIFICADOR . ASIGNACION logico '\n'
 
-    ASIGNACION  desplazar e ir al estado 7
+    ASIGNACION  desplazar e ir al estado 5
 
 
-Estado 5
+Estado 4
 
     2 entrada: entrada linea .
 
     $default  reduce usando la regla 2 (entrada)
 
 
-Estado 6
-
-    5 linea: error '\n' .
-
-    $default  reduce usando la regla 5 (linea)
-
-
-Estado 7
+Estado 5
 
     3 linea: IDENTIFICADOR ASIGNACION . expr '\n'
     4      | IDENTIFICADOR ASIGNACION . logico '\n'
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 9
-    REAL           desplazar e ir al estado 10
-    _TRUE          desplazar e ir al estado 11
-    _FALSE         desplazar e ir al estado 12
-    NOT            desplazar e ir al estado 13
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 15
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 7
+    REAL           desplazar e ir al estado 8
+    _TRUE          desplazar e ir al estado 9
+    _FALSE         desplazar e ir al estado 10
+    NOT            desplazar e ir al estado 11
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 13
 
-    logico  ir al estado 16
-    expr    ir al estado 17
+    logico  ir al estado 14
+    expr    ir al estado 15
+
+
+Estado 6
+
+   20 expr: NUMERO .
+
+    $default  reduce usando la regla 20 (expr)
+
+
+Estado 7
+
+    7 logico: IDENTIFICADOR .
+   22 expr: IDENTIFICADOR .
+
+    IGUAL     reduce usando la regla 7 (logico)
+    IGUAL     [reduce usando la regla 22 (expr)]
+    DISTINTO  reduce usando la regla 7 (logico)
+    DISTINTO  [reduce usando la regla 22 (expr)]
+    AND       reduce usando la regla 7 (logico)
+    OR        reduce usando la regla 7 (logico)
+    '\n'      reduce usando la regla 7 (logico)
+    '\n'      [reduce usando la regla 22 (expr)]
+    ')'       reduce usando la regla 7 (logico)
+    ')'       [reduce usando la regla 22 (expr)]
+    $default  reduce usando la regla 22 (expr)
 
 
 Estado 8
 
-   21 expr: NUMERO .
+   21 expr: REAL .
 
     $default  reduce usando la regla 21 (expr)
 
 
 Estado 9
 
-    8 logico: IDENTIFICADOR .
-   23 expr: IDENTIFICADOR .
+    5 logico: _TRUE .
 
-    IGUAL     reduce usando la regla 8 (logico)
-    IGUAL     [reduce usando la regla 23 (expr)]
-    DISTINTO  reduce usando la regla 8 (logico)
-    DISTINTO  [reduce usando la regla 23 (expr)]
-    AND       reduce usando la regla 8 (logico)
-    OR        reduce usando la regla 8 (logico)
-    '\n'      reduce usando la regla 8 (logico)
-    '\n'      [reduce usando la regla 23 (expr)]
-    ')'       reduce usando la regla 8 (logico)
-    ')'       [reduce usando la regla 23 (expr)]
-    $default  reduce usando la regla 23 (expr)
+    $default  reduce usando la regla 5 (logico)
 
 
 Estado 10
 
-   22 expr: REAL .
-
-    $default  reduce usando la regla 22 (expr)
-
-
-Estado 11
-
-    6 logico: _TRUE .
+    6 logico: _FALSE .
 
     $default  reduce usando la regla 6 (logico)
 
 
+Estado 11
+
+   18 logico: NOT . logico
+
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 7
+    REAL           desplazar e ir al estado 8
+    _TRUE          desplazar e ir al estado 9
+    _FALSE         desplazar e ir al estado 10
+    NOT            desplazar e ir al estado 11
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 13
+
+    logico  ir al estado 16
+    expr    ir al estado 17
+
+
 Estado 12
 
-    7 logico: _FALSE .
+   29 expr: '-' . expr
 
-    $default  reduce usando la regla 7 (logico)
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
+
+    expr  ir al estado 20
 
 
 Estado 13
 
-   19 logico: NOT . logico
+   19 logico: '(' . logico ')'
+   30 expr: '(' . expr ')'
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 9
-    REAL           desplazar e ir al estado 10
-    _TRUE          desplazar e ir al estado 11
-    _FALSE         desplazar e ir al estado 12
-    NOT            desplazar e ir al estado 13
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 15
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 7
+    REAL           desplazar e ir al estado 8
+    _TRUE          desplazar e ir al estado 9
+    _FALSE         desplazar e ir al estado 10
+    NOT            desplazar e ir al estado 11
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 13
 
-    logico  ir al estado 18
-    expr    ir al estado 19
+    logico  ir al estado 21
+    expr    ir al estado 22
 
 
 Estado 14
 
-   30 expr: '-' . expr
+    4 linea: IDENTIFICADOR ASIGNACION logico . '\n'
+   14 logico: logico . IGUAL logico
+   15       | logico . DISTINTO logico
+   16       | logico . AND logico
+   17       | logico . OR logico
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
-
-    expr  ir al estado 22
+    IGUAL     desplazar e ir al estado 23
+    DISTINTO  desplazar e ir al estado 24
+    AND       desplazar e ir al estado 25
+    OR        desplazar e ir al estado 26
+    '\n'      desplazar e ir al estado 27
 
 
 Estado 15
 
-   20 logico: '(' . logico ')'
-   31 expr: '(' . expr ')'
+    3 linea: IDENTIFICADOR ASIGNACION expr . '\n'
+    8 logico: expr . LOGICOMAYOR expr
+    9       | expr . LOGICOMENOR expr
+   10       | expr . LOGICOMAYORIGUAL expr
+   11       | expr . LOGICOMENORIGUAL expr
+   12       | expr . IGUAL expr
+   13       | expr . DISTINTO expr
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 9
-    REAL           desplazar e ir al estado 10
-    _TRUE          desplazar e ir al estado 11
-    _FALSE         desplazar e ir al estado 12
-    NOT            desplazar e ir al estado 13
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 15
-
-    logico  ir al estado 23
-    expr    ir al estado 24
+    DIV               desplazar e ir al estado 28
+    LOGICOMAYOR       desplazar e ir al estado 29
+    LOGICOMENOR       desplazar e ir al estado 30
+    LOGICOMAYORIGUAL  desplazar e ir al estado 31
+    LOGICOMENORIGUAL  desplazar e ir al estado 32
+    IGUAL             desplazar e ir al estado 33
+    DISTINTO          desplazar e ir al estado 34
+    '+'               desplazar e ir al estado 35
+    '-'               desplazar e ir al estado 36
+    '*'               desplazar e ir al estado 37
+    '/'               desplazar e ir al estado 38
+    '%'               desplazar e ir al estado 39
+    '\n'              desplazar e ir al estado 40
 
 
 Estado 16
 
-    4 linea: IDENTIFICADOR ASIGNACION logico . '\n'
-   15 logico: logico . IGUAL logico
-   16       | logico . DISTINTO logico
-   17       | logico . AND logico
-   18       | logico . OR logico
+   14 logico: logico . IGUAL logico
+   15       | logico . DISTINTO logico
+   16       | logico . AND logico
+   17       | logico . OR logico
+   18       | NOT logico .
 
-    IGUAL     desplazar e ir al estado 25
-    DISTINTO  desplazar e ir al estado 26
-    AND       desplazar e ir al estado 27
-    OR        desplazar e ir al estado 28
-    '\n'      desplazar e ir al estado 29
+    $default  reduce usando la regla 18 (logico)
 
 
 Estado 17
 
-    3 linea: IDENTIFICADOR ASIGNACION expr . '\n'
-    9 logico: expr . LOGICOMAYOR expr
-   10       | expr . LOGICOMENOR expr
-   11       | expr . LOGICOMAYORIGUAL expr
-   12       | expr . LOGICOMENORIGUAL expr
-   13       | expr . IGUAL expr
-   14       | expr . DISTINTO expr
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
+    8 logico: expr . LOGICOMAYOR expr
+    9       | expr . LOGICOMENOR expr
+   10       | expr . LOGICOMAYORIGUAL expr
+   11       | expr . LOGICOMENORIGUAL expr
+   12       | expr . IGUAL expr
+   13       | expr . DISTINTO expr
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
 
-    DIV               desplazar e ir al estado 30
-    LOGICOMAYOR       desplazar e ir al estado 31
-    LOGICOMENOR       desplazar e ir al estado 32
-    LOGICOMAYORIGUAL  desplazar e ir al estado 33
-    LOGICOMENORIGUAL  desplazar e ir al estado 34
-    IGUAL             desplazar e ir al estado 35
-    DISTINTO          desplazar e ir al estado 36
-    '+'               desplazar e ir al estado 37
-    '-'               desplazar e ir al estado 38
-    '*'               desplazar e ir al estado 39
-    '/'               desplazar e ir al estado 40
-    '%'               desplazar e ir al estado 41
-    '\n'              desplazar e ir al estado 42
+    DIV               desplazar e ir al estado 28
+    LOGICOMAYOR       desplazar e ir al estado 29
+    LOGICOMENOR       desplazar e ir al estado 30
+    LOGICOMAYORIGUAL  desplazar e ir al estado 31
+    LOGICOMENORIGUAL  desplazar e ir al estado 32
+    IGUAL             desplazar e ir al estado 33
+    DISTINTO          desplazar e ir al estado 34
+    '+'               desplazar e ir al estado 35
+    '-'               desplazar e ir al estado 36
+    '*'               desplazar e ir al estado 37
+    '/'               desplazar e ir al estado 38
+    '%'               desplazar e ir al estado 39
 
 
 Estado 18
 
-   15 logico: logico . IGUAL logico
-   16       | logico . DISTINTO logico
-   17       | logico . AND logico
-   18       | logico . OR logico
-   19       | NOT logico .
+   22 expr: IDENTIFICADOR .
 
-    $default  reduce usando la regla 19 (logico)
+    $default  reduce usando la regla 22 (expr)
 
 
 Estado 19
 
-    9 logico: expr . LOGICOMAYOR expr
-   10       | expr . LOGICOMENOR expr
-   11       | expr . LOGICOMAYORIGUAL expr
-   12       | expr . LOGICOMENORIGUAL expr
-   13       | expr . IGUAL expr
-   14       | expr . DISTINTO expr
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
+   30 expr: '(' . expr ')'
 
-    DIV               desplazar e ir al estado 30
-    LOGICOMAYOR       desplazar e ir al estado 31
-    LOGICOMENOR       desplazar e ir al estado 32
-    LOGICOMAYORIGUAL  desplazar e ir al estado 33
-    LOGICOMENORIGUAL  desplazar e ir al estado 34
-    IGUAL             desplazar e ir al estado 35
-    DISTINTO          desplazar e ir al estado 36
-    '+'               desplazar e ir al estado 37
-    '-'               desplazar e ir al estado 38
-    '*'               desplazar e ir al estado 39
-    '/'               desplazar e ir al estado 40
-    '%'               desplazar e ir al estado 41
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
+
+    expr  ir al estado 41
 
 
 Estado 20
 
-   23 expr: IDENTIFICADOR .
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+   29     | '-' expr .
 
-    $default  reduce usando la regla 23 (expr)
+    $default  reduce usando la regla 29 (expr)
 
 
 Estado 21
 
-   31 expr: '(' . expr ')'
+   14 logico: logico . IGUAL logico
+   15       | logico . DISTINTO logico
+   16       | logico . AND logico
+   17       | logico . OR logico
+   19       | '(' logico . ')'
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
-
-    expr  ir al estado 43
+    IGUAL     desplazar e ir al estado 23
+    DISTINTO  desplazar e ir al estado 24
+    AND       desplazar e ir al estado 25
+    OR        desplazar e ir al estado 26
+    ')'       desplazar e ir al estado 42
 
 
 Estado 22
 
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-   30     | '-' expr .
+    8 logico: expr . LOGICOMAYOR expr
+    9       | expr . LOGICOMENOR expr
+   10       | expr . LOGICOMAYORIGUAL expr
+   11       | expr . LOGICOMENORIGUAL expr
+   12       | expr . IGUAL expr
+   13       | expr . DISTINTO expr
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+   30     | '(' expr . ')'
 
-    $default  reduce usando la regla 30 (expr)
+    DIV               desplazar e ir al estado 28
+    LOGICOMAYOR       desplazar e ir al estado 29
+    LOGICOMENOR       desplazar e ir al estado 30
+    LOGICOMAYORIGUAL  desplazar e ir al estado 31
+    LOGICOMENORIGUAL  desplazar e ir al estado 32
+    IGUAL             desplazar e ir al estado 33
+    DISTINTO          desplazar e ir al estado 34
+    '+'               desplazar e ir al estado 35
+    '-'               desplazar e ir al estado 36
+    '*'               desplazar e ir al estado 37
+    '/'               desplazar e ir al estado 38
+    '%'               desplazar e ir al estado 39
+    ')'               desplazar e ir al estado 43
 
 
 Estado 23
 
-   15 logico: logico . IGUAL logico
-   16       | logico . DISTINTO logico
-   17       | logico . AND logico
-   18       | logico . OR logico
-   20       | '(' logico . ')'
+   14 logico: logico IGUAL . logico
 
-    IGUAL     desplazar e ir al estado 25
-    DISTINTO  desplazar e ir al estado 26
-    AND       desplazar e ir al estado 27
-    OR        desplazar e ir al estado 28
-    ')'       desplazar e ir al estado 44
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 7
+    REAL           desplazar e ir al estado 8
+    _TRUE          desplazar e ir al estado 9
+    _FALSE         desplazar e ir al estado 10
+    NOT            desplazar e ir al estado 11
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 13
+
+    logico  ir al estado 44
+    expr    ir al estado 17
 
 
 Estado 24
 
-    9 logico: expr . LOGICOMAYOR expr
-   10       | expr . LOGICOMENOR expr
-   11       | expr . LOGICOMAYORIGUAL expr
-   12       | expr . LOGICOMENORIGUAL expr
-   13       | expr . IGUAL expr
-   14       | expr . DISTINTO expr
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-   31     | '(' expr . ')'
+   15 logico: logico DISTINTO . logico
 
-    DIV               desplazar e ir al estado 30
-    LOGICOMAYOR       desplazar e ir al estado 31
-    LOGICOMENOR       desplazar e ir al estado 32
-    LOGICOMAYORIGUAL  desplazar e ir al estado 33
-    LOGICOMENORIGUAL  desplazar e ir al estado 34
-    IGUAL             desplazar e ir al estado 35
-    DISTINTO          desplazar e ir al estado 36
-    '+'               desplazar e ir al estado 37
-    '-'               desplazar e ir al estado 38
-    '*'               desplazar e ir al estado 39
-    '/'               desplazar e ir al estado 40
-    '%'               desplazar e ir al estado 41
-    ')'               desplazar e ir al estado 45
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 7
+    REAL           desplazar e ir al estado 8
+    _TRUE          desplazar e ir al estado 9
+    _FALSE         desplazar e ir al estado 10
+    NOT            desplazar e ir al estado 11
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 13
+
+    logico  ir al estado 45
+    expr    ir al estado 17
 
 
 Estado 25
 
-   15 logico: logico IGUAL . logico
+   16 logico: logico AND . logico
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 9
-    REAL           desplazar e ir al estado 10
-    _TRUE          desplazar e ir al estado 11
-    _FALSE         desplazar e ir al estado 12
-    NOT            desplazar e ir al estado 13
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 15
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 7
+    REAL           desplazar e ir al estado 8
+    _TRUE          desplazar e ir al estado 9
+    _FALSE         desplazar e ir al estado 10
+    NOT            desplazar e ir al estado 11
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 13
 
     logico  ir al estado 46
-    expr    ir al estado 19
+    expr    ir al estado 17
 
 
 Estado 26
 
-   16 logico: logico DISTINTO . logico
+   17 logico: logico OR . logico
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 9
-    REAL           desplazar e ir al estado 10
-    _TRUE          desplazar e ir al estado 11
-    _FALSE         desplazar e ir al estado 12
-    NOT            desplazar e ir al estado 13
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 15
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 7
+    REAL           desplazar e ir al estado 8
+    _TRUE          desplazar e ir al estado 9
+    _FALSE         desplazar e ir al estado 10
+    NOT            desplazar e ir al estado 11
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 13
 
     logico  ir al estado 47
-    expr    ir al estado 19
+    expr    ir al estado 17
 
 
 Estado 27
-
-   17 logico: logico AND . logico
-
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 9
-    REAL           desplazar e ir al estado 10
-    _TRUE          desplazar e ir al estado 11
-    _FALSE         desplazar e ir al estado 12
-    NOT            desplazar e ir al estado 13
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 15
-
-    logico  ir al estado 48
-    expr    ir al estado 19
-
-
-Estado 28
-
-   18 logico: logico OR . logico
-
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 9
-    REAL           desplazar e ir al estado 10
-    _TRUE          desplazar e ir al estado 11
-    _FALSE         desplazar e ir al estado 12
-    NOT            desplazar e ir al estado 13
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 15
-
-    logico  ir al estado 49
-    expr    ir al estado 19
-
-
-Estado 29
 
     4 linea: IDENTIFICADOR ASIGNACION logico '\n' .
 
     $default  reduce usando la regla 4 (linea)
 
 
+Estado 28
+
+   27 expr: expr DIV . expr
+
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
+
+    expr  ir al estado 48
+
+
+Estado 29
+
+    8 logico: expr LOGICOMAYOR . expr
+
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
+
+    expr  ir al estado 49
+
+
 Estado 30
 
-   28 expr: expr DIV . expr
+    9 logico: expr LOGICOMENOR . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 50
 
 
 Estado 31
 
-    9 logico: expr LOGICOMAYOR . expr
+   10 logico: expr LOGICOMAYORIGUAL . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 51
 
 
 Estado 32
 
-   10 logico: expr LOGICOMENOR . expr
+   11 logico: expr LOGICOMENORIGUAL . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 52
 
 
 Estado 33
 
-   11 logico: expr LOGICOMAYORIGUAL . expr
+   12 logico: expr IGUAL . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 53
 
 
 Estado 34
 
-   12 logico: expr LOGICOMENORIGUAL . expr
+   13 logico: expr DISTINTO . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 54
 
 
 Estado 35
 
-   13 logico: expr IGUAL . expr
+   23 expr: expr '+' . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 55
 
 
 Estado 36
 
-   14 logico: expr DISTINTO . expr
+   24 expr: expr '-' . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 56
 
 
 Estado 37
 
-   24 expr: expr '+' . expr
+   25 expr: expr '*' . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 57
 
 
 Estado 38
 
-   25 expr: expr '-' . expr
+   26 expr: expr '/' . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 58
 
 
 Estado 39
 
-   26 expr: expr '*' . expr
+   28 expr: expr '%' . expr
 
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
+    NUMERO         desplazar e ir al estado 6
+    IDENTIFICADOR  desplazar e ir al estado 18
+    REAL           desplazar e ir al estado 8
+    '-'            desplazar e ir al estado 12
+    '('            desplazar e ir al estado 19
 
     expr  ir al estado 59
 
 
 Estado 40
 
-   27 expr: expr '/' . expr
-
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
-
-    expr  ir al estado 60
-
-
-Estado 41
-
-   29 expr: expr '%' . expr
-
-    NUMERO         desplazar e ir al estado 8
-    IDENTIFICADOR  desplazar e ir al estado 20
-    REAL           desplazar e ir al estado 10
-    '-'            desplazar e ir al estado 14
-    '('            desplazar e ir al estado 21
-
-    expr  ir al estado 61
-
-
-Estado 42
-
     3 linea: IDENTIFICADOR ASIGNACION expr '\n' .
 
     $default  reduce usando la regla 3 (linea)
 
 
+Estado 41
+
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+   30     | '(' expr . ')'
+
+    DIV  desplazar e ir al estado 28
+    '+'  desplazar e ir al estado 35
+    '-'  desplazar e ir al estado 36
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+    ')'  desplazar e ir al estado 43
+
+
+Estado 42
+
+   19 logico: '(' logico ')' .
+
+    $default  reduce usando la regla 19 (logico)
+
+
 Estado 43
 
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-   31     | '(' expr . ')'
+   30 expr: '(' expr ')' .
 
-    DIV  desplazar e ir al estado 30
-    '+'  desplazar e ir al estado 37
-    '-'  desplazar e ir al estado 38
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
-    ')'  desplazar e ir al estado 45
+    $default  reduce usando la regla 30 (expr)
 
 
 Estado 44
 
-   20 logico: '(' logico ')' .
-
-    $default  reduce usando la regla 20 (logico)
-
-
-Estado 45
-
-   31 expr: '(' expr ')' .
-
-    $default  reduce usando la regla 31 (expr)
-
-
-Estado 46
-
-   15 logico: logico . IGUAL logico
-   15       | logico IGUAL logico .
-   16       | logico . DISTINTO logico
-   17       | logico . AND logico
-   18       | logico . OR logico
-
-    $default  reduce usando la regla 15 (logico)
-
-
-Estado 47
-
-   15 logico: logico . IGUAL logico
-   16       | logico . DISTINTO logico
-   16       | logico DISTINTO logico .
-   17       | logico . AND logico
-   18       | logico . OR logico
-
-    $default  reduce usando la regla 16 (logico)
-
-
-Estado 48
-
-   15 logico: logico . IGUAL logico
-   16       | logico . DISTINTO logico
-   17       | logico . AND logico
-   17       | logico AND logico .
-   18       | logico . OR logico
-
-    IGUAL     desplazar e ir al estado 25
-    DISTINTO  desplazar e ir al estado 26
-
-    $default  reduce usando la regla 17 (logico)
-
-
-Estado 49
-
-   15 logico: logico . IGUAL logico
-   16       | logico . DISTINTO logico
-   17       | logico . AND logico
-   18       | logico . OR logico
-   18       | logico OR logico .
-
-    IGUAL     desplazar e ir al estado 25
-    DISTINTO  desplazar e ir al estado 26
-    AND       desplazar e ir al estado 27
-
-    $default  reduce usando la regla 18 (logico)
-
-
-Estado 50
-
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   28     | expr DIV expr .
-   29     | expr . '%' expr
-
-    $default  reduce usando la regla 28 (expr)
-
-
-Estado 51
-
-    9 logico: expr LOGICOMAYOR expr .
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-
-    DIV  desplazar e ir al estado 30
-    '+'  desplazar e ir al estado 37
-    '-'  desplazar e ir al estado 38
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
-
-    $default  reduce usando la regla 9 (logico)
-
-
-Estado 52
-
-   10 logico: expr LOGICOMENOR expr .
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-
-    DIV  desplazar e ir al estado 30
-    '+'  desplazar e ir al estado 37
-    '-'  desplazar e ir al estado 38
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
-
-    $default  reduce usando la regla 10 (logico)
-
-
-Estado 53
-
-   11 logico: expr LOGICOMAYORIGUAL expr .
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-
-    DIV  desplazar e ir al estado 30
-    '+'  desplazar e ir al estado 37
-    '-'  desplazar e ir al estado 38
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
-
-    $default  reduce usando la regla 11 (logico)
-
-
-Estado 54
-
-   12 logico: expr LOGICOMENORIGUAL expr .
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-
-    DIV  desplazar e ir al estado 30
-    '+'  desplazar e ir al estado 37
-    '-'  desplazar e ir al estado 38
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
-
-    $default  reduce usando la regla 12 (logico)
-
-
-Estado 55
-
-   13 logico: expr IGUAL expr .
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-
-    DIV  desplazar e ir al estado 30
-    '+'  desplazar e ir al estado 37
-    '-'  desplazar e ir al estado 38
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
-
-    $default  reduce usando la regla 13 (logico)
-
-
-Estado 56
-
-   14 logico: expr DISTINTO expr .
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-
-    DIV  desplazar e ir al estado 30
-    '+'  desplazar e ir al estado 37
-    '-'  desplazar e ir al estado 38
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
+   14 logico: logico . IGUAL logico
+   14       | logico IGUAL logico .
+   15       | logico . DISTINTO logico
+   16       | logico . AND logico
+   17       | logico . OR logico
 
     $default  reduce usando la regla 14 (logico)
 
 
-Estado 57
+Estado 45
 
-   24 expr: expr . '+' expr
-   24     | expr '+' expr .
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
+   14 logico: logico . IGUAL logico
+   15       | logico . DISTINTO logico
+   15       | logico DISTINTO logico .
+   16       | logico . AND logico
+   17       | logico . OR logico
 
-    DIV  desplazar e ir al estado 30
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
-
-    $default  reduce usando la regla 24 (expr)
+    $default  reduce usando la regla 15 (logico)
 
 
-Estado 58
+Estado 46
 
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   25     | expr '-' expr .
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
+   14 logico: logico . IGUAL logico
+   15       | logico . DISTINTO logico
+   16       | logico . AND logico
+   16       | logico AND logico .
+   17       | logico . OR logico
 
-    DIV  desplazar e ir al estado 30
-    '*'  desplazar e ir al estado 39
-    '/'  desplazar e ir al estado 40
-    '%'  desplazar e ir al estado 41
+    IGUAL     desplazar e ir al estado 23
+    DISTINTO  desplazar e ir al estado 24
 
-    $default  reduce usando la regla 25 (expr)
+    $default  reduce usando la regla 16 (logico)
 
 
-Estado 59
+Estado 47
 
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   26     | expr '*' expr .
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
+   14 logico: logico . IGUAL logico
+   15       | logico . DISTINTO logico
+   16       | logico . AND logico
+   17       | logico . OR logico
+   17       | logico OR logico .
 
-    $default  reduce usando la regla 26 (expr)
+    IGUAL     desplazar e ir al estado 23
+    DISTINTO  desplazar e ir al estado 24
+    AND       desplazar e ir al estado 25
+
+    $default  reduce usando la regla 17 (logico)
 
 
-Estado 60
+Estado 48
 
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   27     | expr '/' expr .
-   28     | expr . DIV expr
-   29     | expr . '%' expr
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   27     | expr DIV expr .
+   28     | expr . '%' expr
 
     $default  reduce usando la regla 27 (expr)
 
 
-Estado 61
+Estado 49
 
-   24 expr: expr . '+' expr
-   25     | expr . '-' expr
-   26     | expr . '*' expr
-   27     | expr . '/' expr
-   28     | expr . DIV expr
-   29     | expr . '%' expr
-   29     | expr '%' expr .
+    8 logico: expr LOGICOMAYOR expr .
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
 
-    $default  reduce usando la regla 29 (expr)
+    DIV  desplazar e ir al estado 28
+    '+'  desplazar e ir al estado 35
+    '-'  desplazar e ir al estado 36
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+
+    $default  reduce usando la regla 8 (logico)
+
+
+Estado 50
+
+    9 logico: expr LOGICOMENOR expr .
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    DIV  desplazar e ir al estado 28
+    '+'  desplazar e ir al estado 35
+    '-'  desplazar e ir al estado 36
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+
+    $default  reduce usando la regla 9 (logico)
+
+
+Estado 51
+
+   10 logico: expr LOGICOMAYORIGUAL expr .
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    DIV  desplazar e ir al estado 28
+    '+'  desplazar e ir al estado 35
+    '-'  desplazar e ir al estado 36
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+
+    $default  reduce usando la regla 10 (logico)
+
+
+Estado 52
+
+   11 logico: expr LOGICOMENORIGUAL expr .
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    DIV  desplazar e ir al estado 28
+    '+'  desplazar e ir al estado 35
+    '-'  desplazar e ir al estado 36
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+
+    $default  reduce usando la regla 11 (logico)
+
+
+Estado 53
+
+   12 logico: expr IGUAL expr .
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    DIV  desplazar e ir al estado 28
+    '+'  desplazar e ir al estado 35
+    '-'  desplazar e ir al estado 36
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+
+    $default  reduce usando la regla 12 (logico)
+
+
+Estado 54
+
+   13 logico: expr DISTINTO expr .
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    DIV  desplazar e ir al estado 28
+    '+'  desplazar e ir al estado 35
+    '-'  desplazar e ir al estado 36
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+
+    $default  reduce usando la regla 13 (logico)
+
+
+Estado 55
+
+   23 expr: expr . '+' expr
+   23     | expr '+' expr .
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    DIV  desplazar e ir al estado 28
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+
+    $default  reduce usando la regla 23 (expr)
+
+
+Estado 56
+
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   24     | expr '-' expr .
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    DIV  desplazar e ir al estado 28
+    '*'  desplazar e ir al estado 37
+    '/'  desplazar e ir al estado 38
+    '%'  desplazar e ir al estado 39
+
+    $default  reduce usando la regla 24 (expr)
+
+
+Estado 57
+
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   25     | expr '*' expr .
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    $default  reduce usando la regla 25 (expr)
+
+
+Estado 58
+
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   26     | expr '/' expr .
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+
+    $default  reduce usando la regla 26 (expr)
+
+
+Estado 59
+
+   23 expr: expr . '+' expr
+   24     | expr . '-' expr
+   25     | expr . '*' expr
+   26     | expr . '/' expr
+   27     | expr . DIV expr
+   28     | expr . '%' expr
+   28     | expr '%' expr .
+
+    $default  reduce usando la regla 28 (expr)

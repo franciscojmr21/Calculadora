@@ -18,7 +18,6 @@ tabla_IDs TS;
 void yyerror(const char* s){         /*    llamada por cada error sintactico de yacc */
 
 	cout << "Error sintáctico en la instrucción "<< n_instruciones<<endl;
-	error=false; 	
 } 
 void errorDiv0(){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": división por cero"<<endl;	
@@ -29,9 +28,19 @@ void errorDivInt(string op){         /*    llamada por cada error semántico de 
 void errorVarNoDef(string var){         /*    llamada por cada error semántico de yacc */
 	cout << "Error semántico en la instrucción "<< n_instruciones<<": la variable "<<var<<" no está definida"<<endl;	
 } 
+void errorVarIsInt(string var, int type){         /*    llamada por cada error semántico de yacc */
+	cout << "Error semántico en la instrucción "<< n_instruciones<<": la variable "<<var<<" es de tipo ";
+	if(type==0){
+		cout<<"entero y no se le puede asignar un valor real"<<endl;
+	}else{
+		cout<<"real y no se le puede asignar un valor entero"<<endl;
+	}	
+}
 
 void prompt(){
 	n_instruciones++;
+	error = false;
+	cout<<endl<<"instruccion "<<n_instruciones<<endl;
 }
 
 %}
@@ -70,20 +79,31 @@ void prompt(){
 entrada: 		{prompt();}
       |entrada linea
       ;
-linea:  IDENTIFICADOR ASIGNACION expr '\n' {	tipo_datoTS dato;
+linea:  IDENTIFICADOR ASIGNACION expr '\n' {	tipo_datoTS dato; tipo_datoTS datoID; cout<<"id prueba "<<$1<<endl;
 						if(!error){
+							strcpy(datoID.identificador, $1);
+							bool existe = obtenerDato(TS, datoID);
+							cout<<"existe "<<existe<<endl;
 							if($3.isInt){
-								strcpy(dato.identificador, $1);
-								dato.tipo = 0;
-								dato.valor.valor_entero = $3.valor;
+								if(existe && datoID.tipo!=0){
+									errorVarIsInt($1, 0);
+								}else{
+									strcpy(dato.identificador, $1);
+									dato.tipo = 0;
+									dato.valor.valor_entero = $3.valor;
+								}
 							}else{
-								strcpy(dato.identificador, $1);
-								dato.tipo = 1;
-								dato.valor.valor_real = $3.valor;
+								if(existe && datoID.tipo!=1){
+									errorVarIsInt($1, 1);
+								}else{
+									strcpy(dato.identificador, $1);
+									dato.tipo = 1;
+									dato.valor.valor_real = $3.valor;
+								}
 							}
 							insertar(TS, dato);
 						}
-						else error=false; 
+						else error=true; 
 						prompt(); }
 	| IDENTIFICADOR ASIGNACION logico '\n' {tipo_datoTS dato;
 											if(!error) {
@@ -93,19 +113,19 @@ linea:  IDENTIFICADOR ASIGNACION expr '\n' {	tipo_datoTS dato;
 												dato.valor.valor_bool = $3;
 												insertar(TS, dato);
 											}
-											else error=false; 
+											else error=true; 
 											prompt();}	
-	|error		'\n'			{yyerrok;prompt();}      
+	|error		'\n'			{yyerrok; cout<<"error log "<<error<<endl; prompt();}      
 	;
 	
        
 logico: _TRUE		{$$=true;}
 	|_FALSE	{$$=false;}
-	|IDENTIFICADOR			{
+	|IDENTIFICADOR			{cout<<"id log "<<$1<<endl;
 						tipo_datoTS dato;
 						strcpy(dato.identificador, $1);
-						error = obtenerDato(TS, dato);
-						if(error) errorVarNoDef($1);
+						error = !obtenerDato(TS, dato);
+						if(error){ errorVarNoDef($1); cout<<"error id log"<<endl;}
 						else{
 							switch (dato.tipo) {
 								case 0:
@@ -124,11 +144,11 @@ logico: _TRUE		{$$=true;}
 	|expr LOGICOMENOR expr	{$$ = $1.valor<$3.valor;}
 	|expr LOGICOMAYORIGUAL expr	{$$ = $1.valor>=$3.valor;}
 	|expr LOGICOMENORIGUAL expr	{$$ = $1.valor<=$3.valor;}
-	|expr IGUAL expr	{$$ = $1.valor == $3.valor;}
+	|expr IGUAL expr	{cout<<"igual expr"<<endl;$$ = $1.valor == $3.valor; }
 	|expr DISTINTO expr	{$$ = $1.valor != $3.valor;}
-	|logico IGUAL logico	{$$ = $1 == $3;}
+	|logico IGUAL logico	{cout<<"igual log"<<endl;$$ = $1 == $3;}
 	|logico DISTINTO logico {$$ = $1 != $3;}
-	|logico AND logico {$$ = $1 && $3;}
+	|logico AND logico {if(!error){ $$ = $1 && $3; cout<<"NO error and"<<endl;}else cout<<"error and"<<endl;}
 	|logico OR logico {$$ = $1 || $3;}
 	|NOT logico 		{if($2)$$=false;else $$=true;}
 	|'(' logico ')'		{$$=$2;}
@@ -136,7 +156,7 @@ logico: _TRUE		{$$=true;}
 
 expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}   
 	|REAL                   	{$$.isInt=false;$$.valor=$1;} 
-	|IDENTIFICADOR			{
+	|IDENTIFICADOR			{cout<<"id expr "<<$1<<endl;
 						tipo_datoTS dato;
 						strcpy(dato.identificador, $1);
 						error = !(obtenerDato(TS, dato));
