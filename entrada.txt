@@ -1,14 +1,14 @@
-A := 2*3+1
-Bb := (3+A)*2.54
-Cc := A < Bb  
-logico_ := (B == 3) and (Bb==10)     //error, B no existe
-A := 1 div 2 
-A_2 := 12 % Bb    //error semántico, Bb es de tipo real
-A := 12.2*Bb       //error semántico, A es de tipo entero y recibe un valor de tipo real. A debe seguir valiendo 0
-A := A+1
-X := true + 2   //error sintáctico o semántico, no se pueden hacer operaciones aritméticas con valores lógicos 
-salir       //error sintáctico    
-aa := A + A
-bandera := false
-aux := bandera // error sintáctico o semántico, no admitimos variables lógicas en la parte derecha
-aux := not bandera // error sintáctico o semántico, no admitimos variables lógicas en la parte derecha
+A := 3.0
+B := 4.5
+C := A + B
+A := 4.5 - B
+B := A * C
+C := 0.0
+A := 8
+D := 1
+E := D + 2
+F := D / 2.0
+G := D % 2
+H := true and (1 < 4)
+I := false or (4 >= 1)
+J := not (3 == 2+1)

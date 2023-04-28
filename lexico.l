@@ -1,4 +1,5 @@
 %{
+//Autores: Pablo Rodríguez Rico y Francisco Javier Muñoz Ruiz
 #include "expresiones.h"
 #include <math.h>
 int n_instruciones;
@@ -28,7 +29,6 @@ not [n][o][t]
 <COM1>"\n"     {BEGIN(0); return (yytext[0]);}    
 <COM1>.     ;
 
-SALIR			return SALIR;
 {true}			return _TRUE;
 {false}		return _FALSE;
 {igual}		return IGUAL;

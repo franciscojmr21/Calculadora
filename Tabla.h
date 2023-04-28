@@ -1,3 +1,5 @@
+//Autores: Pablo Rodríguez Rico y Francisco Javier Muñoz Ruiz
+
 #include <string>
 #include <cstring>
 #include <iostream>

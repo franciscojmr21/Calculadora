@@ -1,4 +1,5 @@
 %{
+//Autores: Pablo Rodríguez Rico y Francisco Javier Muñoz Ruiz
 #include <iostream>
 #include "Tabla.h"
 
@@ -42,14 +43,10 @@ void yyerror(const char* s){         /*    llamada por cada error sintactico de 
 	n_instruciones++;
 } 
 
-void prompt(){
-	n_instruciones++;
-}
-
 %}
 
 %start entrada
-%token NUMERO SALIR IDENTIFICADOR REAL ASIGNACION DIV LOGICOMAYOR LOGICOMENOR LOGICOMAYORIGUAL LOGICOMENORIGUAL _TRUE _FALSE IGUAL DISTINTO AND OR NOT
+%token NUMERO IDENTIFICADOR REAL ASIGNACION DIV LOGICOMAYOR LOGICOMENOR LOGICOMAYORIGUAL LOGICOMENORIGUAL _TRUE _FALSE IGUAL DISTINTO AND OR NOT
 %type <c_expresion> expr
 %type <c_cadena> IDENTIFICADOR
 %type <c_entero> NUMERO
@@ -79,7 +76,7 @@ void prompt(){
 %%
 
 
-entrada: 		{prompt();}
+entrada: 		{n_instruciones++;}
       |entrada linea
       ;
 linea:  IDENTIFICADOR ASIGNACION expr '\n' {
@@ -113,7 +110,7 @@ linea:  IDENTIFICADOR ASIGNACION expr '\n' {
 							}
 						}}
 						hayError = false;
-						prompt();}
+						n_instruciones++;}
 						
 	| IDENTIFICADOR ASIGNACION logico '\n' {
 									if(!hayError){
@@ -124,7 +121,7 @@ linea:  IDENTIFICADOR ASIGNACION expr '\n' {
 											insertar(TS, dato);
 									}
 									hayError = false;
-									prompt();}	
+									n_instruciones++;}	
 
 	|error		'\n'			{yyerrok;}      
 	;
@@ -179,6 +176,8 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
        | expr '/' expr        {$$.isInt= false; if($3.valor != 0) 
 				       				$$.valor=static_cast<double>($1.valor/$3.valor);
 				       			else {
+										hayError = true;
+										errorDiv0();
 				       				}
 								} 
        | expr DIV expr        {$$.isInt = $1.isInt && $3.isInt; if($3.valor == 0) {
@@ -220,34 +219,17 @@ expr:    NUMERO 		      {$$.isInt=true;$$.valor=$1;}
 int main(int argc, char *argv[]){
      
      n_instruciones = 0;
-     
-     cout <<endl<<"******************************************************"<<endl;
-     cout <<"*      Calculadora de expresiones aritméticas        *"<<endl;
-     cout <<"*                                                    *"<<endl;
-     cout <<"*      1)con el prompt LISTO>                        *"<<endl;
-     cout <<"*        teclea una expresión, por ej. 1+2<ENTER>    *"<<endl;
-     cout <<"*        Este programa indicará                      *"<<endl;
-     cout <<"*        si es gramaticalmente correcto              *"<<endl;
-     cout <<"*      2)para terminar el programa                   *"<<endl;
-     cout <<"*        teclear SALIR<ENTER>                        *"<<endl;
-     cout <<"*      3)si se comete algun error en la expresión    *"<<endl;
-     cout <<"*        se mostrará un mensaje y la ejecución       *"<<endl;
-     cout <<"*        del programa finaliza                       *"<<endl;
-     cout <<"******************************************************"<<endl<<endl<<endl;
+     cout<<endl;
 	 if(argc > 2){
 		yyin = fopen(argv[1], "r");
 		yyout = fopen(argv[2], "w");
      	yyparse();
 		mostrarTS(TS);
 	 }else{
-		cout << "Error en los argumentos" << endl;
+		cout << "Error: el número de argumentos no es correcto" << endl;
 	 }
 
 	 fclose(yyin);
-	
-     cout <<"****************************************************"<<endl;
-     cout <<"*                                                  *"<<endl;
-     cout <<"*                 ADIOS!!!!                        *"<<endl;
-     cout <<"****************************************************"<<endl;
+
      return 0;
 }

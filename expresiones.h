@@ -50,27 +50,26 @@ extern int yydebug;
   enum yytokentype
   {
     NUMERO = 258,
-    SALIR = 259,
-    IDENTIFICADOR = 260,
-    REAL = 261,
-    ASIGNACION = 262,
-    DIV = 263,
-    LOGICOMAYOR = 264,
-    LOGICOMENOR = 265,
-    LOGICOMAYORIGUAL = 266,
-    LOGICOMENORIGUAL = 267,
-    _TRUE = 268,
-    _FALSE = 269,
-    IGUAL = 270,
-    DISTINTO = 271,
-    AND = 272,
-    OR = 273,
-    NOT = 274,
-    MENOR = 275,
-    MENORIGUAL = 276,
-    MAYORIGUAL = 277,
-    MAYOR = 278,
-    menos = 279
+    IDENTIFICADOR = 259,
+    REAL = 260,
+    ASIGNACION = 261,
+    DIV = 262,
+    LOGICOMAYOR = 263,
+    LOGICOMENOR = 264,
+    LOGICOMAYORIGUAL = 265,
+    LOGICOMENORIGUAL = 266,
+    _TRUE = 267,
+    _FALSE = 268,
+    IGUAL = 269,
+    DISTINTO = 270,
+    AND = 271,
+    OR = 272,
+    NOT = 273,
+    MENOR = 274,
+    MENORIGUAL = 275,
+    MAYORIGUAL = 276,
+    MAYOR = 277,
+    menos = 278
   };
 #endif
 
@@ -78,7 +77,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 68 "expresiones.y"
+#line 65 "expresiones.y"
 
 	int c_entero;
 	char c_cadena[25];
@@ -89,7 +88,7 @@ union YYSTYPE
 		bool isInt;
 	} c_expresion;
 
-#line 93 "expresiones.h"
+#line 92 "expresiones.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

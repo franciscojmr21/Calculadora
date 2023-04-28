@@ -1,3 +1,5 @@
+//Autores: Pablo Rodríguez Rico y Francisco Javier Muñoz Ruiz
+
 #include "Tabla.h"
 #include <string>
 #include <iostream>

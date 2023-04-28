@@ -1,6 +1,11 @@
 Tabla de símbolos:
-A    entero    1
-Bb    real    25.400000
-Cc    lógico    true
-aa    entero    2
-bandera    lógico    false
+A    real    0.000000
+B    real    0.000000
+C    real    0.000000
+D    entero    1
+E    entero    3
+F    real    0.500000
+G    entero    1
+H    lógico    true
+I    lógico    true
+J    lógico    false
